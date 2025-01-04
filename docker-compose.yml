@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  oracle-db:
+    build:
+      context: .
+    shm_size: 2g
+    ports:
+      - "1521:1521" 
+      - "8080:8080" 
+    environment:
+      ORACLE_PASSWORD: oracle
+    volumes:
+      - ./init-scripts:/etc/entrypoint-initdb.d
