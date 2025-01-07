@@ -21,4 +21,7 @@ With version 3.4.x:
   "path": "/edad"
 }
 
+For Oracle images use
+docker pull orangehrm/oracle-xe-11g:latest
+
 
