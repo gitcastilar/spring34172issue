@@ -1,53 +1,48 @@
-create or replace PACKAGE BODY PKG_CALCULAR_EDAD IS
+CREATE OR REPLACE PACKAGE PKG_CALCULAR_EDAD IS
+   TYPE cursor_generico IS REF CURSOR;
 
-  /************************************************************************/
-  --*** FECHA MODIFICACION: 01/07/2011
-  --*** AUTOR CREACION    : EUGENIO CLAVERO P.
-  --*** MODIFICACION      : SE CAMBIA LA FORMA DE OBTENER LOS ANOS, MESES Y DIAS A PARTIDR FECHA NACIMIENTO     
-  /**********************************************************************************/
+   PROCEDURE p_obtieneedad(
+      pin_fechanac IN VARCHAR2,
+      out_vdatos   OUT cursor_generico
+   );
+END PKG_CALCULAR_EDAD;
+/
 
-  PROCEDURE p_obtieneedad(pin_fechanac IN VARCHAR2,
-                          out_vdatos   OUT cursor_generico) IS
-  
-    v_anhos            NUMBER;
-    v_mes              NUMBER;
-    v_dias             NUMBER;
-    
-    f_nacimiento date; --fecha de nacimiento de la persona
-    f_calculo date; --fecha a la cual deseamos saber su edad
-    solo_meses number;
-  
-    v_minutos_al_mes   NUMBER;
-    v_minutos_por_dia  NUMBER;
-    v_cantidad_minutos NUMBER;
-    v_residuo_mes      NUMBER;
-    v_residuo_dias     NUMBER;
-    v_dias_al_anho     NUMBER;
-    v_hora_del_dia     NUMBER;
-    v_minutos_de_hora  NUMBER;
-    v_minutos_al_anho  NUMBER;
-    v_meses_del_anho   NUMBER;
-    v_fecha_actual     DATE;
-  
-  BEGIN
-  
---datos iniciales
-f_nacimiento := to_date(pin_fechanac, 'dd/mm/yyyy');
-f_calculo :=  to_date(to_char(sysdate, 'dd/mm/yyyy'),'dd/mm/yyyy');
- 
---todo a meses
-solo_meses := months_between(f_calculo, f_nacimiento);
---
-v_anhos := trunc(solo_meses / 12);
-v_mes := trunc(mod(solo_meses, 12));
-v_dias := f_calculo - add_months(f_nacimiento, trunc(solo_meses));                           
-  
-    OPEN out_vdatos FOR
-      SELECT v_anhos AS v_anos
-            ,v_mes   AS v_mes
-            ,v_dias  AS v_dias
-        FROM dual;
-  
-  END p_obtieneedad;
+CREATE OR REPLACE PACKAGE BODY PKG_CALCULAR_EDAD IS
 
-END pkg_calcular_edad;
+   PROCEDURE p_obtieneedad(
+      pin_fechanac IN VARCHAR2,
+      out_vdatos   OUT cursor_generico
+   ) IS
+      v_anhos            NUMBER;
+      v_mes              NUMBER;
+      v_dias             NUMBER;
+      
+      f_nacimiento DATE; -- Fecha de nacimiento de la persona
+      f_calculo DATE;    -- Fecha a la cual deseamos saber su edad
+      solo_meses NUMBER;
+
+   BEGIN
+      -- Datos iniciales
+      f_nacimiento := TO_DATE(pin_fechanac, 'dd/mm/yyyy');
+      f_calculo := TO_DATE(TO_CHAR(SYSDATE, 'dd/mm/yyyy'), 'dd/mm/yyyy');
+
+      -- Todo a meses
+      solo_meses := MONTHS_BETWEEN(f_calculo, f_nacimiento);
+
+      -- Calcular años, meses y días
+      v_anhos := TRUNC(solo_meses / 12);
+      v_mes := TRUNC(MOD(solo_meses, 12));
+      v_dias := f_calculo - ADD_MONTHS(f_nacimiento, TRUNC(solo_meses));
+
+      -- Abrir el cursor de salida
+      OPEN out_vdatos FOR
+        SELECT v_anhos AS v_anos,
+               v_mes   AS v_mes,
+               v_dias  AS v_dias
+          FROM dual;
+
+   END p_obtieneedad;
+
+END PKG_CALCULAR_EDAD;
+/

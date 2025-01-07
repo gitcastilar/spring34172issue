@@ -62,7 +62,6 @@ public class ServiceDao {
             logger.info("Executing stored procedure: {}", storeProc);
 
             SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate);
-            jdbcCall.withSchemaName(databaseOwner);
             String[] sQuery = storeProc.split("\\.");
             if (sQuery.length > 1) {
                 jdbcCall.withCatalogName(sQuery[0]).withProcedureName(sQuery[1]);

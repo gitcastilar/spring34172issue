@@ -1,14 +1,15 @@
-version: "3.9"
-
 services:
   oracle-db:
     build:
       context: .
     shm_size: 2g
     ports:
-      - "1521:1521" 
-      - "8080:8080" 
+      - "1521:1521"  # Oracle DB Listener
+      - "8080:8080"  # Oracle APEX
     environment:
-      ORACLE_PASSWORD: oracle
+      ORACLE_PASSWORD: oracle  # Sets the default system and SYS user passwords
+      ORACLE_ALLOW_REMOTE: true  # Allows remote connections
     volumes:
-      - ./init-scripts:/etc/entrypoint-initdb.d
+      - ./init-scripts:/etc/entrypoint-initdb.d  # Initialization scripts
+      - oracle-data:/u01/app/oracle  # Persistent data storage
+
